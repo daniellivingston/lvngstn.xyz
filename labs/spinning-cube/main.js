@@ -68,20 +68,66 @@ document.addEventListener('keyup', function(event) {
 
 let camera, scene, renderer;
 let stats, controls, clock;
-let cube;
+let cubes;
 
-const container = document.querySelector("#container");
+const canvas = document.querySelector("#c");
 
 init();
 animate();
 
-function init() {
-    camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 15);
-    camera.position.set(0, 5, 10);
+function createRenderer() {
+    const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
 
-    scene = new THREE.Scene();
+    return renderer;
+}
+
+function createCamera() {
+    const fov = 45;
+    const aspect = window.innerWidth / window.innerHeight;
+    const near = 0.1;
+    const far = 15;
+
+    const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    return camera;
+}
+
+function makeCubeInstance(geometry, color, x) {
+    const material = new THREE.MeshPhongMaterial({ color });
+    const cube = new THREE.Mesh(geometry, material);
+    cube.castShadow = true;
+    cube.position.set(x, 0, 0);
+
+    scene.add(cube);
+
+    return cube;
+}
+
+function createScene() {
+    const scene = new THREE.Scene();
     scene.background = new THREE.Color(BLUE);
 
+    // Lights
+    const ambient = new THREE.HemisphereLight(0xffffff, 0xbfd4d2, 3);
+    scene.add(ambient);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    directionalLight.position.set(1, 4, 3).multiplyScalar(3);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.setScalar( 2048 );
+    directionalLight.shadow.bias = - 1e-4;
+    directionalLight.shadow.normalBias = 1e-4;
+    scene.add(directionalLight);
+    
     // Ground
     const plane = new THREE.Mesh(
         new THREE.PlaneGeometry(50, 50),
@@ -95,41 +141,22 @@ function init() {
     plane.receiveShadow = true;
     scene.add(plane);
 
-    // Lights
-    const ambient = new THREE.HemisphereLight(0xffffff, 0xbfd4d2, 3);
-    scene.add( ambient );
+    return scene;
+}
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
-    directionalLight.position.set(1, 4, 3).multiplyScalar(3);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.setScalar( 2048 );
-    directionalLight.shadow.bias = - 1e-4;
-    directionalLight.shadow.normalBias = 1e-4;
-    scene.add(directionalLight);
+function init() {
+    camera = createCamera();
+    renderer = createRenderer();
+    scene = createScene();
 
-    // Cube
-    cube = new THREE.Mesh(
-        new THREE.BoxGeometry(1, 1, 1),
-        new THREE.MeshPhongMaterial({
-            color: RED,
-            specular: 0x050505,
-            shininess: 50,
-            emissive: 0x000000
-        })
-    );
-    cube.position.set(0, 1, 0);
-    cube.castShadow = true;
-    scene.add(cube);
+    camera.position.set(0, 7.5, 7.5);
+    camera.lookAt(0, 0, 0);
 
-    // Renderer
-    renderer = new THREE.WebGLRenderer({ antialias: true});
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    container.appendChild(renderer.domElement);
-
-    window.addEventListener('resize', onWindowResize);
+    cubes = [
+        makeCubeInstance(new THREE.BoxGeometry(1, 1, 1), RED, 0),
+        makeCubeInstance(new THREE.BoxGeometry(1, 1, 1), GREEN, -2),
+        makeCubeInstance(new THREE.BoxGeometry(1, 1, 1), YELLOW, 2)
+    ];
 
     // Clock
     clock = new THREE.Clock();
@@ -144,13 +171,6 @@ function init() {
     container.appendChild(stats.dom);
 }
 
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
 function animate() {
     requestAnimationFrame(animate);
 
@@ -162,8 +182,11 @@ function animate() {
     hud.textContent = `Position: x=${camera.position.x.toFixed(2)}, y=${camera.position.y.toFixed(2)}, z=${camera.position.z.toFixed(2)}`;
     hud.textContent += `; Rotation: ${camera.rotation.x.toFixed(2)}, ${camera.rotation.y.toFixed(2)}, ${camera.rotation.z.toFixed(2)}`
 
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    cubes.forEach((cube, index) => {
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+        cube.position.y = 2 + Math.sin((clock.elapsedTime + index) * 2);
+    });
 
     renderer.render(scene, camera);
     stats.update();
