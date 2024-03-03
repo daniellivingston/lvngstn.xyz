@@ -1,9 +1,16 @@
-// See FPS demo: https://threejs.org/examples/?q=FPS#games_fps
-// Source: https://github.com/mrdoob/three.js/blob/master/examples/games_fps.html
+// add water -- https://threejs.org/examples/#webgl_shaders_ocean
 
 import * as THREE from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+let camera,
+    scene,
+    renderer,
+    stats,
+    controls,
+    clock,
+    cubes;
 
 const GREEN = 0x81a684;
 const TAN = 0xfdba95;
@@ -66,14 +73,7 @@ document.addEventListener('keyup', function(event) {
     }
 });
 
-let camera, scene, renderer;
-let stats, controls, clock;
-let cubes;
-
 const canvas = document.querySelector("#c");
-
-init();
-animate();
 
 function createRenderer() {
     const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
@@ -81,7 +81,7 @@ function createRenderer() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    
+
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -127,7 +127,7 @@ function createScene() {
     directionalLight.shadow.bias = - 1e-4;
     directionalLight.shadow.normalBias = 1e-4;
     scene.add(directionalLight);
-    
+
     // Ground
     const plane = new THREE.Mesh(
         new THREE.PlaneGeometry(50, 50),
@@ -165,14 +165,14 @@ function init() {
     controls = new OrbitControls(camera, renderer.domElement);
     controls.maxPolarAngle = 0.9 * Math.PI / 2;
     controls.enableZoom = false;
-    
+
     // Stats
     stats = new Stats();
     container.appendChild(stats.dom);
 }
 
-function animate() {
-    requestAnimationFrame(animate);
+function loop() {
+    renderer.render(scene, camera);
 
     const deltaTime = clock.getDelta();
     updateCameraPosition(deltaTime);
@@ -188,8 +188,9 @@ function animate() {
         cube.position.y = 2 + Math.sin((clock.elapsedTime + index) * 2);
     });
 
-    renderer.render(scene, camera);
     stats.update();
+
+    requestAnimationFrame(loop);
 }
 
 function updateCameraPosition(deltaTime) {
@@ -201,3 +202,10 @@ function updateCameraPosition(deltaTime) {
     camera.translateX(dx * c);
     camera.translateZ(-dz * c);
 }
+
+const main = () => {
+    init();
+    loop();
+};
+
+main();
