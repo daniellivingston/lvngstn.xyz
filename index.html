@@ -1,56 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <head>
-        <title>LVNGSTN.XYZ</title>
-        <style>
-          html, body {
-            margin: 0;
-            height: 100%;
-          }
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>LVNGSTN.XYZ</title>
+    <meta name="description" content="Daniel Livingston is a senior software engineer">
+    <meta name="author" content="Daniel Livingston">
 
-          #c {
-            width: 100%;
-            height: 100%;
-            display: block;
-          }
-        </style>
-    </head>
+    <style>
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
 
-    <body>
-        <div id="container">
-          <canvas id="c"></canvas>
-          <div id="test">
-            <center>
-                <h1>LVNGSTN.XYZ</h1>
-                <h1>LVNGSTN.XYZ</h1>
-                <h1>LVNGSTN.XYZ</h1>
-                <h1>LVNGSTN.XYZ</h1>
-                <h1>LVNGSTN.XYZ</h1>
-                <h1>LVNGSTN.XYZ</h1>
-                <h1>LVNGSTN.XYZ</h1>
-                <h1>LVNGSTN.XYZ</h1>
-                <h1>LVNGSTN.XYZ</h1>
-                <h2>LVNGSTN.XYZ</h2>
-                <h2>LVNGSTN.XYZ</h2>
-                <h2>LVNGSTN.XYZ</h2>
-                <h3>LVNGSTN.XYZ</h3>
-                <h3>LVNGSTN.XYZ</h3>
-                <h3>LVNGSTN.XYZ</h3>
-                <h4>LVNGSTN.XYZ</h4>
-                <h4>LVNGSTN.XYZ</h4>
-            </center>
-          </div>
-        </div>
+      body {
+        background-color: #fff;
+        font: monospace;
+        color: #000;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 12px;
+      }
 
-        <script type="importmap">
-            {
-              "imports": {
-                "three": "https://unpkg.com/three@0.161.0/build/three.module.js"
-              }
-            }
-        </script>
-        <script type="module" src="main.js"></script>
-        </body>
+      a {
+        color: #000;
+        text-decoration: underline;
+      }
+
+      a:hover, a:active {
+        color: #6F64F0;
+      }
+
+      pre {
+        padding: 5px 20px;
+        margin: 0;
+      }
+
+      .container {
+        margin: 0;
+        padding:0;
+        display: flex;
+        justify-content: center;
+        align-items: top;
+        flex-direction: row;
+        width: 100%;
+      }
+
+      #main {
+        flex-direction: column;
+        height: 100%;
+      }
+
+      @media only screen and (max-width: 1000px) {
+        #name {
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+        #firstname, #lastname {
+          font-size: 10px;
+        }
+      }
+
+      @media only screen and (max-width: 600px) {
+        #firstname, #lastname {
+          font-size: 6px;
+        }
+        #name {
+          padding: 30px 0px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container" id="main">
+      <!-- Name: DANIEL LIVINGSTON -->
+      <div class="container" id="name">
+        <pre id="firstname">
+██████╗  █████╗ ███╗   ██╗██╗███████╗██╗
+██╔══██╗██╔══██╗████╗  ██║██║██╔════╝██║
+██║  ██║███████║██╔██╗ ██║██║█████╗  ██║
+██║  ██║██╔══██║██║╚██╗██║██║██╔══╝  ██║
+██████╔╝██║  ██║██║ ╚████║██║███████╗███████╗
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚══════╝
+        </pre>
+        <pre id="lastname">
+██╗     ██╗██╗   ██╗██╗███╗   ██╗ ██████╗ ███████╗████████╗ ██████╗ ███╗   ██╗
+██║     ██║██║   ██║██║████╗  ██║██╔════╝ ██╔════╝╚══██╔══╝██╔═══██╗████╗  ██║
+██║     ██║██║   ██║██║██╔██╗ ██║██║  ███╗███████╗   ██║   ██║   ██║██╔██╗ ██║
+██║     ██║╚██╗ ██╔╝██║██║╚██╗██║██║   ██║╚════██║   ██║   ██║   ██║██║╚██╗██║
+███████╗██║ ╚████╔╝ ██║██║ ╚████║╚██████╔╝███████║   ██║   ╚██████╔╝██║ ╚████║
+╚══════╝╚═╝  ╚═══╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═══╝
+        </pre>
+      </div>
+      <div class="container" id="footerbtns">
+        <pre id="scroll">
+    ______________________________
+     |                            |.
+     |         <a href="mailto:daniel.livingston@live.com?subject=Hello">Contact Me</a>         |.
+     |                            |.
+     |                            |.
+     |            <a href="https://www.twitter.com/lindadong" target="_blank">@ Me</a>            |.
+     |                            |.
+
+        </pre>
+      </div>
+    </div>
+  </body>
 </html>
