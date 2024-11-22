@@ -9,8 +9,8 @@ var buffer;
 var locationOfTime;
 var locationOfResolution;
 
-var startTime = new Date().getTime();
 var currentTime = 0;
+const startTime = new Date().getTime();
 
 const vsSource = `
     attribute vec2 a_position;
@@ -155,23 +155,6 @@ const fsSource = `
     }
 `;
 
-function init() {
-    // standard canvas setup here, except get webgl context
-}
-
-function render() {
-    var now = new Date().getTime();
-    currentTime = (now - startTime) / 1000;
-    gl.uniform1f(locationOfTime, currentTime);
-
-    window.requestAnimationFrame(render, canvas);
-
-    positionLocation = gl.getAttribLocation(program, "a_position");
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-}
-
 window.addEventListener(
     'load',
     () => {
@@ -181,11 +164,6 @@ window.addEventListener(
             console.log("WebGL unavailable");
             return;
         }
-
-        // Set clear color to black, fully opaque
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        // Clear the color buffer with specified clear color
-        gl.clear(gl.COLOR_BUFFER_BIT);
 
         canvas.width  = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -226,7 +204,23 @@ window.addEventListener(
         gl.uniform2f(locationOfResolution, canvas.width, canvas.height);
         gl.uniform1f(locationOfTime, currentTime);
 
-        render();
+        function render() {
+            gl.clearColor(1.0, 1.0, 1.0, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+
+            const now = new Date().getTime();
+            currentTime = (now - startTime) / 1000;
+            gl.uniform1f(locationOfTime, currentTime);
+
+            positionLocation = gl.getAttribLocation(program, "a_position");
+            gl.enableVertexAttribArray(positionLocation);
+            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+            requestAnimationFrame(render);
+        }
+
+        requestAnimationFrame(render);
     }
 );
 
